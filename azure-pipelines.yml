@@ -44,10 +44,6 @@ stages:
         scannerMode: 'CLI'
         configMode: 'file'
       
-      -task: uploadartifact
-      -upload: $(Build.ArtifactStagingDirectory)
-      artifact: drop
-
 
 
 
