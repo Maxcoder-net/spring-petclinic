@@ -34,6 +34,9 @@ stages:
       displayName: 'Maven Package'
       inputs:
         mavenPomFile: 'pom.xml'
+        
+
+
 
     - task: CopyFiles@2
       displayName: 'Copy Files to artifact staging directory'
@@ -41,9 +44,15 @@ stages:
         SourceFolder: '$(System.DefaultWorkingDirectory)'
         Contents: '**/target/*.?(war|jar)'
         TargetFolder: $(Build.ArtifactStagingDirectory)
-
-    - upload: $(Build.ArtifactStagingDirectory)
+      -task: SonarQubePrepare@5
+      inputs:
+        scannerMode: 'CLI'
+        configMode: 'file'
+      -upload: $(Build.ArtifactStagingDirectory)
       artifact: drop
+
+
+
 
 - stage: Deploy
   displayName: Deploy stage
