@@ -45,6 +45,7 @@ stages:
         Contents: '**/target/*.?(war|jar)'
         TargetFolder: $(Build.ArtifactStagingDirectory)
       -task: SonarQubePrepare@5
+      displayName: 'test'
       inputs:
         scannerMode: 'CLI'
         configMode: 'file'
