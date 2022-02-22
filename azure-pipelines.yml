@@ -44,12 +44,7 @@ stages:
 
     - upload: $(Build.ArtifactStagingDirectory)
       artifact: drop
-- task: AzureCloudPowerShellDeployment@1
-  inputs:
-    EnableAdvancedStorageOptions: false
-    CsPkg: 
-    slotName: 'Production'
-    AllowUpgrade: true
+
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
