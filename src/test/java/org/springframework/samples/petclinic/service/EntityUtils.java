@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2019 the original author or authors.
+ * Copyright 2012-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package org.springframework.samples.petclinic.service;
 
-import java.util.Collection;
-
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.samples.petclinic.model.BaseEntity;
+
+import java.util.Collection;
 
 /**
  * Utility methods for handling entities. Separate from the BaseEntity class mainly
@@ -43,7 +43,7 @@ public abstract class EntityUtils {
 	public static <T extends BaseEntity> T getById(Collection<T> entities, Class<T> entityClass, int entityId)
 			throws ObjectRetrievalFailureException {
 		for (T entity : entities) {
-			if (entity.getId() == entityId && entityClass.isInstance(entity)) {
+			if (entity.getId() != null && entity.getId() == entityId && entityClass.isInstance(entity)) {
 				return entity;
 			}
 		}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2019 the original author or authors.
+ * Copyright 2012-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,17 @@
 
 package org.springframework.samples.petclinic.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Locale;
 import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
 /**
  * @author Michael Isvy Simple test to make sure that Bean Validation is working (useful
@@ -40,10 +40,15 @@ class ValidatorTests {
 		return localValidatorFactoryBean;
 	}
 
+	private <T> ConstraintViolation<T> getOnlyViolation(Set<ConstraintViolation<T>> violations) {
+		assertThat(violations).hasSize(1);
+		return violations.iterator().next();
+	}
+
 	@Test
 	void shouldNotValidateWhenFirstNameEmpty() {
-
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
+
 		Person person = new Person();
 		person.setFirstName("");
 		person.setLastName("smith");
@@ -51,10 +56,25 @@ class ValidatorTests {
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Person>> constraintViolations = validator.validate(person);
 
-		assertThat(constraintViolations).hasSize(1);
-		ConstraintViolation<Person> violation = constraintViolations.iterator().next();
-		assertThat(violation.getPropertyPath().toString()).isEqualTo("firstName");
-		assertThat(violation.getMessage()).isEqualTo("must not be empty");
+		ConstraintViolation<Person> violation = getOnlyViolation(constraintViolations);
+		assertThat(violation.getPropertyPath()).hasToString("firstName");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");
+	}
+
+	@Test
+	void shouldNotValidateWhenLastNameEmpty() {
+		LocaleContextHolder.setLocale(Locale.ENGLISH);
+
+		Person person = new Person();
+		person.setFirstName("George");
+		person.setLastName("");
+
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Person>> constraintViolations = validator.validate(person);
+
+		ConstraintViolation<Person> violation = getOnlyViolation(constraintViolations);
+		assertThat(violation.getPropertyPath()).hasToString("lastName");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");
 	}
 
 }
